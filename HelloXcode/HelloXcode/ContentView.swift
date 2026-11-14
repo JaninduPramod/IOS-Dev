@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var timeLeft = 10
     @State private var isPlaying = false
     @State private var isGameOver = false
+    @AppStorage("highScore") private var highScore = 0
 
     let accent = Color(red: 0.6, green: 0.85, blue: 0.7)
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -87,6 +88,9 @@ struct ContentView: View {
             Text("\(score)")
                 .font(.system(size: 80, weight: .black))
                 .foregroundStyle(accent)
+            Text("Best: \(highScore)")
+                .font(.title2.bold())
+                .foregroundStyle(.white)
 
             Spacer()
 
@@ -111,6 +115,7 @@ struct ContentView: View {
     func endGame() {
         isPlaying = false
         isGameOver = true
+        highScore = max(highScore, score)
     }
 
     func resetGame() {
