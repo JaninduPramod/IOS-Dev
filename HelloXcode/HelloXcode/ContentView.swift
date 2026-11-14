@@ -9,8 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var score = 0
+    @State private var timeLeft = 10
+    @State private var isPlaying = false
 
     let accent = Color(red: 0.6, green: 0.85, blue: 0.7)
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
         ZStack {
@@ -31,10 +34,21 @@ struct ContentView: View {
                     .font(.system(size: 80, weight: .black))
                     .foregroundStyle(accent)
 
+                ProgressView(value: Double(timeLeft), total: 10)
+                    .tint(accent)
+                    .padding(.horizontal, 40)
+
+                Text(isPlaying ? "\(timeLeft)s" : "tap to start")
+                    .foregroundStyle(.gray)
+
                 Spacer()
 
                 Button {
-                    score += 1
+                    if isPlaying {
+                        score += 1
+                    } else {
+                        isPlaying = true
+                    }
                 } label: {
                     Text("TAP")
                         .font(.system(size: 50, weight: .black))
@@ -44,6 +58,11 @@ struct ContentView: View {
                 }
 
                 Spacer()
+            }
+        }
+        .onReceive(timer) { _ in
+            if isPlaying && timeLeft > 0 {
+                timeLeft -= 1
             }
         }
     }
